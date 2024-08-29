@@ -1,10 +1,8 @@
 package com.example.playlistmaker
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -32,26 +30,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-//@SuppressLint("MissingInflatedId", "ResourceType")
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
-//        val imageButtonSearch = findViewById<Button>(R.id.search_button)
-//        val imageMediaSearch = findViewById<Button>(R.id.media_button)
-//        val imageSettingSearch = findViewById<Button>(R.id.settings_button)
-//        val imageClickListener: View.OnClickListener = object : View.OnClickListener {
-//            override fun onClick(v: View?) {
-//                Toast.makeText(this@MainActivity, "Поиск", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//        imageButtonSearch.setOnClickListener(imageClickListener)
-//
-//
-//        imageMediaSearch.setOnClickListener {
-//            Toast.makeText(this@MainActivity, "Медиа", Toast.LENGTH_SHORT).show()
-//        }
-//        imageSettingSearch.setOnClickListener {
-//            Toast.makeText(this@MainActivity, "Настройки", Toast.LENGTH_SHORT).show()
-//        }
-//    }
 
