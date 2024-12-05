@@ -4,16 +4,18 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 
 class SearchActivity : AppCompatActivity() {
+    private var searchQuery: String? = null
+
     @SuppressLint("WrongViewCast", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +39,8 @@ class SearchActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
+                clearButton.isVisible = !s.isNullOrEmpty()
+                searchQuery = s?.toString()
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -47,10 +50,21 @@ class SearchActivity : AppCompatActivity() {
             searchEditText.text.clear()
             hideKeyboard()
             searchEditText.clearFocus()
-            clearButton.visibility = View.GONE
+            clearButton.isVisible = false
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("SEARCH_QUERY", searchQuery)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        searchQuery = savedInstanceState.getString("SEARCH_QUERY")
+        val searchEditText: EditText = findViewById(R.id.et_search)
+        searchEditText.setText(searchQuery)
+    }
 
     private fun hideKeyboard() {
         val view = this.currentFocus
