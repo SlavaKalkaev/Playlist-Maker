@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/settings_screen_background"
     android:orientation="vertical"
     android:paddingLeft="16dp"
@@ -76,6 +77,12 @@
             android:background="?attr/selectableItemBackgroundBorderless" />
 
     </FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/track_view"
+        tools:itemCount="5"/>
 
 
 </LinearLayout>

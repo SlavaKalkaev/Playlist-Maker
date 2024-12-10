@@ -3,4 +3,8 @@
     <color name="background_main">#FF000000</color>
     <color name="settings_screen_background">#FF000000</color>
     <color name="text_color">#FFFFFFFF</color>
+    <color name="track_name">#FFFFFF</color>
+    <color name="artist_name">#FFFFFF</color>
+    <color name="track_time">#FFFFFF</color>
+    <color name="icon_search">#FFFFFF</color>
    </resources>

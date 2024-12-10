@@ -23,4 +23,9 @@
         <item name="android:textColor">@color/text_color</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
     </style>
+    <style name="SongTextStyle">
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/song_text_size</item>
+        <item name="android:textColor">?attr/colorSecondary</item>
+    </style>
 </resources>
