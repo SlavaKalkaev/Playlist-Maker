@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 
 
@@ -25,6 +26,7 @@ class TrackAdapter(private val trackList: List<Track>) : RecyclerView.Adapter<Tr
 
             Glide.with(itemView.context)
                 .load(track.artworkUrl100)
+                .transform(RoundedCorners(10))
                 .into(artworkImage)
         }
     }

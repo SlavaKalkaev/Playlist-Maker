@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@color/settings_screen_background"
-    android:paddingVertical="8dp">
+    android:paddingVertical="8dp"
+    >
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -78,10 +79,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
             android:src="@drawable/arrow_for"
             android:layout_gravity="center_vertical|end"
-            android:paddingRight="4dp"/>
+            />
 
     </FrameLayout>
 
