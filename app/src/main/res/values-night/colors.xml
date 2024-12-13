@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background_main">#FF000000</color>
-    <color name="settings_screen_background">#FF000000</color>
+    <color name="background_main">#1A1B22</color>
+    <color name="settings_screen_background">#1A1B22</color>
     <color name="text_color">#FFFFFFFF</color>
+    <color name="track_name">#FFFFFF</color>
+    <color name="artist_name">#FFFFFF</color>
+    <color name="track_time">#FFFFFF</color>
+    <color name="icon_search">#FFFFFF</color>
+    <color name="back">#FFFFFF</color>
    </resources>

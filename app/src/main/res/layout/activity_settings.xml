@@ -22,7 +22,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/padding_start"
             android:layout_marginTop="@dimen/corner_margin"
-            android:src="@drawable/arrow" />
+            android:src="@drawable/arrow"
+            app:tint="@color/back" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -36,7 +37,8 @@
 
     </LinearLayout>
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
+        style="@style/ButtonSettingsScreenStyle"
         android:layout_height="@dimen/button_height"
         android:layout_marginTop="40dp"
         android:backgroundTint="@color/white"
@@ -46,8 +48,10 @@
         android:text="@string/dark_theme"
         android:textAlignment="textStart"
         android:textAllCaps="false"
+        app:thumbTint="@color/switch_thumb_selector"
         tools:ignore="UseSwitchCompatOrMaterialXml"
-        style="@style/ButtonSettingsScreenStyle"/>
+
+        />
 
     <TextView
         android:id="@+id/share_pril"
