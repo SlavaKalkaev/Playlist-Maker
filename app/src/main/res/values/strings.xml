@@ -15,4 +15,8 @@
     <string name="share_title">Поделиться через</string>
     <string name="support_title">Написать в поддержку</string>
     <string name="agreement_title">Открыть пользовательское соглашение</string>
+    <string name="no_results">Ничего не нашлось</string>
+    <string name="conn_problem">Проблемы со связью</string>
+    <string name="loading_fail">Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="reload">Обновить</string>
     </resources>

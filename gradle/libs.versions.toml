@@ -1,6 +1,7 @@
 [versions]
 agp = "8.3.0"
 glide = "4.14.2"
+gson = "2.10.1"
 kotlin = "1.9.0"
 coreKtx = "1.10.1"
 junit = "4.13.2"
@@ -10,9 +11,12 @@ appcompat = "1.6.1"
 material = "1.11.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
+retrofit = "2.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 material = { group = "com.google.android.material", name = "material", version = "1.6.1" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glideCompiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
@@ -22,6 +26,7 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
