@@ -66,7 +66,7 @@ class SearchActivity : AppCompatActivity() {
         imagePlaceholder = findViewById(R.id.imagePlaceholder)
         textPlaceholder = findViewById(R.id.textPlaceholder)
         btnReload = findViewById(R.id.btnReload)
-        searchEditText=findViewById(R.id.search)
+        searchEditText = findViewById(R.id.search)
 
 
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -105,9 +105,10 @@ class SearchActivity : AppCompatActivity() {
             searchEditText.text.clear()
             hideKeyboard()
             searchEditText.clearFocus()
-            clearButton.isVisible = false
+            clearButton.visibility = View.GONE
             trackList.clear()
             trackAdapter.notifyDataSetChanged()
+            layoutPlaceholder.visibility = View.GONE
         }
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -120,7 +121,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     private fun setViewAfterSearch(state: State) {
         when (state) {
             State.EMPTY -> {
@@ -136,6 +137,8 @@ class SearchActivity : AppCompatActivity() {
                     getString(R.string.conn_problem) + "\n" + getString(R.string.loading_fail)
                 imagePlaceholder.setImageResource(R.drawable.conn_problem)
                 btnReload.visibility = View.VISIBLE
+                trackList.clear()
+                trackAdapter.notifyDataSetChanged()
             }
 
             State.SUCCESS -> {
@@ -145,34 +148,30 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchTracks() {
-        itunesService.search(searchEditText.text.toString()).enqueue(object : Callback<TrackResponse> {
-            override fun onResponse(
-                call: Call<TrackResponse>,
-                response: Response<TrackResponse>
-            ) {
-                trackList.clear()
-                if (response.isSuccessful && response.body()?.results?.isNotEmpty() == true) {
-                    trackList.addAll(response.body()?.results!!)
-                    setViewAfterSearch(State.SUCCESS)
-                } else if (response.isSuccessful) {
-                    setViewAfterSearch(State.EMPTY)
-                } else {
+        itunesService.search(searchEditText.text.toString())
+            .enqueue(object : Callback<TrackResponse> {
+                override fun onResponse(
+                    call: Call<TrackResponse>,
+                    response: Response<TrackResponse>
+                ) {
+                    trackList.clear()
+                    if (response.isSuccessful && response.body()?.results?.isNotEmpty() == true) {
+                        trackList.addAll(response.body()?.results!!)
+                        setViewAfterSearch(State.SUCCESS)
+                    } else if (response.isSuccessful) {
+                        setViewAfterSearch(State.EMPTY)
+                    } else {
+                        setViewAfterSearch(State.ERROR)
+                    }
+                    trackAdapter.notifyDataSetChanged()
+                }
+
+                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+                    trackList.clear()
                     setViewAfterSearch(State.ERROR)
                 }
-                trackAdapter.notifyDataSetChanged()
-            }
-
-            override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                trackList.clear()
-                setViewAfterSearch(State.ERROR)
-            }
-        })
+            })
     }
-
-
-
-
-
 
 
     override fun onSaveInstanceState(outState: Bundle) {
