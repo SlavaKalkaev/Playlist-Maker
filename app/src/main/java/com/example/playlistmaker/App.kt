@@ -3,7 +3,6 @@ package com.example.playlistmaker
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 
-const val THEME_SWITCHER_KEY = "key_for_switch_theme"
 
 class App : Application() {
     var darkTheme = false
