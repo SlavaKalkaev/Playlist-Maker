@@ -38,6 +38,7 @@
     </LinearLayout>
 
     <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_btn"
         style="@style/ButtonSettingsScreenStyle"
         android:layout_height="@dimen/button_height"
         android:layout_marginTop="40dp"

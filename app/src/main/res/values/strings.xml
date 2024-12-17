@@ -19,4 +19,6 @@
     <string name="conn_problem">Проблемы со связью</string>
     <string name="loading_fail">Загрузка не удалась. Проверьте подключение к интернету</string>
     <string name="reload">Обновить</string>
+    <string name="history_search">История поиска</string>
+    <string name="clear_history">Очистить историю</string>
     </resources>

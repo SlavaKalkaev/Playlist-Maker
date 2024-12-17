@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -21,6 +22,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.track.HistoryAdapter
 import com.example.playlistmaker.track.Track
 import com.example.playlistmaker.track.TrackAdapter
 import com.example.playlistmaker.track.TrackResponse
@@ -45,9 +47,17 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var textPlaceholder: TextView
     private lateinit var btnReload: Button
     private lateinit var searchEditText: EditText
+    private lateinit var btnClearHistory: Button
+    private lateinit var sharedPref: SharedPreferences
+    private lateinit var searchHistory: SearchHistory
+    private lateinit var historyRecycler: RecyclerView
+    private lateinit var layoutHistory: LinearLayout
+
 
     private val trackList = arrayListOf<Track>()
     private val trackAdapter = TrackAdapter(trackList)
+    private val tracksInHistory = arrayListOf<Track>()
+    private val searchHistoryAdapter = HistoryAdapter(tracksInHistory)
 
     @SuppressLint("WrongViewCast", "MissingInflatedId", "NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,6 +77,16 @@ class SearchActivity : AppCompatActivity() {
         textPlaceholder = findViewById(R.id.textPlaceholder)
         btnReload = findViewById(R.id.btnReload)
         searchEditText = findViewById(R.id.search)
+        historyRecycler = findViewById(R.id.historyTrackList)
+        layoutHistory = findViewById(R.id.linearLayoutHistory)
+        btnClearHistory = findViewById(R.id.btnClearHistory)
+
+
+
+        sharedPref = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+        searchHistory = SearchHistory(sharedPref)
+        searchHistory.read(tracksInHistory)
+
 
 
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -74,6 +94,24 @@ class SearchActivity : AppCompatActivity() {
         btnReload.setOnClickListener {
             searchTracks()
         }
+        historyRecycler.layoutManager = LinearLayoutManager(this)
+        historyRecycler.adapter = searchHistoryAdapter
+
+        btnClearHistory.setOnClickListener{
+            searchHistory.clear(tracksInHistory)
+            hideKeyboard()
+            searchHistoryAdapter.notifyDataSetChanged()
+            layoutHistory.visibility = View.GONE
+        }
+
+        trackAdapter.itemClickListener = { _, track ->
+            searchHistory.add(track, tracksInHistory)
+            searchHistoryAdapter.notifyDataSetChanged()
+
+            layoutHistory.visibility = if (tracksInHistory.isNotEmpty()) View.VISIBLE else View.GONE
+            layoutPlaceholder.visibility = View.GONE
+        }
+
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_search)) { view, insets ->
@@ -96,6 +134,12 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.isVisible = !s.isNullOrEmpty()
                 searchQuery = s?.toString()
+                layoutHistory.visibility = if (searchEditText.hasFocus() && s?.isEmpty() == true && tracksInHistory.isNotEmpty()) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+                layoutPlaceholder.visibility = if (s.isNullOrEmpty() && trackList.isEmpty()) View.VISIBLE else View.GONE
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -109,6 +153,9 @@ class SearchActivity : AppCompatActivity() {
             trackList.clear()
             trackAdapter.notifyDataSetChanged()
             layoutPlaceholder.visibility = View.GONE
+        }
+        searchEditText.setOnFocusChangeListener { _, hasFocus ->
+            layoutHistory.visibility = if(hasFocus && searchEditText.text.isEmpty() && tracksInHistory.isNotEmpty()) View.VISIBLE else View.GONE
         }
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -193,6 +240,8 @@ class SearchActivity : AppCompatActivity() {
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
-
+    companion object {
+        private const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
+    }
 
 }
