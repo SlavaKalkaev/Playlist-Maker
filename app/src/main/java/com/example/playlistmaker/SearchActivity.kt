@@ -5,10 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -18,11 +23,33 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.track.Track
 import com.example.playlistmaker.track.TrackAdapter
+import com.example.playlistmaker.track.TrackResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
     private var searchQuery: String? = null
+    private val itunesBaseUrl = "https://itunes.apple.com/"
 
-    @SuppressLint("WrongViewCast", "MissingInflatedId")
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(itunesBaseUrl)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    private val itunesService = retrofit.create(ITunesApi::class.java)
+    private lateinit var layoutPlaceholder: LinearLayout
+    private lateinit var imagePlaceholder: ImageView
+    private lateinit var textPlaceholder: TextView
+    private lateinit var btnReload: Button
+    private lateinit var searchEditText: EditText
+
+    private val trackList = arrayListOf<Track>()
+    private val trackAdapter = TrackAdapter(trackList)
+
+    @SuppressLint("WrongViewCast", "MissingInflatedId", "NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -31,47 +58,23 @@ class SearchActivity : AppCompatActivity() {
             val displayIntent = Intent(this, MainActivity::class.java)
             startActivity(displayIntent)
         }
-        val trackList: ArrayList<Track> = arrayListOf(
-            Track(
-                "Smells Like Teen Spirit",
-                "Nirvana",
-                "5:01",
-                "https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg"
-            ),
 
-            Track(
-                "Billie Jean",
-                "Michael Jackson",
-                "4:35",
-                "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/3d/9d/38/3d9d3811-71f0-3a0e-1ada-3004e56ff852/827969428726.jpg/100x100bb.jpg"
-            ),
 
-            Track(
-                "Stayin' Alive",
-                "Bee Gees",
-                "4:10",
-                "https://is4-ssl.mzstatic.com/image/thumb/Music115/v4/1f/80/1f/1f801fc1-8c0f-ea3e-d3e5-387c6619619e/16UMGIM86640.rgb.jpg/100x100bb.jpg"
-            ),
-
-            Track(
-                "Whole Lotta Love",
-                "Led Zeppelin",
-                "5:33",
-                "https://is2-ssl.mzstatic.com/image/thumb/Music62/v4/7e/17/e3/7e17e33f-2efa-2a36-e916-7f808576cf6b/mzm.fyigqcbs.jpg/100x100bb.jpg"
-            ),
-
-            Track(
-                "Sweet Child O'Mine",
-                "Guns N' Roses",
-                "5:03",
-                "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/a0/4d/c4/a04dc484-03cc-02aa-fa82-5334fcb4bc16/18UMGIM24878.rgb.jpg/100x100bb.jpg"
-            ),
-        )
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
 
-        var trackAdapter = TrackAdapter(trackList)
+        layoutPlaceholder = findViewById(R.id.layoutPlaceholder)
+        imagePlaceholder = findViewById(R.id.imagePlaceholder)
+        textPlaceholder = findViewById(R.id.textPlaceholder)
+        btnReload = findViewById(R.id.btnReload)
+        searchEditText = findViewById(R.id.search)
+
+
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = trackAdapter
+        btnReload.setOnClickListener {
+            searchTracks()
+        }
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_search)) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -84,7 +87,7 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
-        val searchEditText: EditText = findViewById(R.id.et_search)
+
         val clearButton: ImageButton = findViewById(R.id.clear_button)
 
         searchEditText.addTextChangedListener(object : TextWatcher {
@@ -102,9 +105,74 @@ class SearchActivity : AppCompatActivity() {
             searchEditText.text.clear()
             hideKeyboard()
             searchEditText.clearFocus()
-            clearButton.isVisible = false
+            clearButton.visibility = View.GONE
+            trackList.clear()
+            trackAdapter.notifyDataSetChanged()
+            layoutPlaceholder.visibility = View.GONE
+        }
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (searchEditText.text.isNotEmpty()) {
+                    searchTracks()
+                }
+                true
+            }
+            false
         }
     }
+
+    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
+    private fun setViewAfterSearch(state: State) {
+        when (state) {
+            State.EMPTY -> {
+                layoutPlaceholder.visibility = View.VISIBLE
+                textPlaceholder.text = getString(R.string.no_results)
+                imagePlaceholder.setImageResource(R.drawable.no_res)
+                btnReload.visibility = View.GONE
+            }
+
+            State.ERROR -> {
+                layoutPlaceholder.visibility = View.VISIBLE
+                textPlaceholder.text =
+                    getString(R.string.conn_problem) + "\n" + getString(R.string.loading_fail)
+                imagePlaceholder.setImageResource(R.drawable.conn_problem)
+                btnReload.visibility = View.VISIBLE
+                trackList.clear()
+                trackAdapter.notifyDataSetChanged()
+            }
+
+            State.SUCCESS -> {
+                layoutPlaceholder.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun searchTracks() {
+        itunesService.search(searchEditText.text.toString())
+            .enqueue(object : Callback<TrackResponse> {
+                override fun onResponse(
+                    call: Call<TrackResponse>,
+                    response: Response<TrackResponse>
+                ) {
+                    trackList.clear()
+                    if (response.isSuccessful && response.body()?.results?.isNotEmpty() == true) {
+                        trackList.addAll(response.body()?.results!!)
+                        setViewAfterSearch(State.SUCCESS)
+                    } else if (response.isSuccessful) {
+                        setViewAfterSearch(State.EMPTY)
+                    } else {
+                        setViewAfterSearch(State.ERROR)
+                    }
+                    trackAdapter.notifyDataSetChanged()
+                }
+
+                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+                    trackList.clear()
+                    setViewAfterSearch(State.ERROR)
+                }
+            })
+    }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -114,7 +182,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         searchQuery = savedInstanceState.getString("SEARCH_QUERY")
-        val searchEditText: EditText = findViewById(R.id.et_search)
+        val searchEditText: EditText = findViewById(R.id.search)
         searchEditText.setText(searchQuery)
     }
 

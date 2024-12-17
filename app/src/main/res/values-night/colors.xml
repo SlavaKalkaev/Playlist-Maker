@@ -8,4 +8,8 @@
     <color name="track_time">#FFFFFF</color>
     <color name="icon_search">#FFFFFF</color>
     <color name="back">#FFFFFF</color>
+    <color name="view_text_placeholder">#FFFFFF</color>
+    <color name="button_text_placeholder">#1A1B22</color>
+    <color name="button_background_placeholder">#FFFFFF</color>
+    <color name="icon_placeholder">#FFFFFF</color>
    </resources>

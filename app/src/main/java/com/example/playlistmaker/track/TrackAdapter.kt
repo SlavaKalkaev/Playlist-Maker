@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class TrackAdapter(private val trackList: List<Track>) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
@@ -22,7 +24,11 @@ class TrackAdapter(private val trackList: List<Track>) : RecyclerView.Adapter<Tr
         fun bind(track: Track) {
             trackName.text = track.trackName
             artistName.text = track.artistName
-            trackTime.text = track.trackTime
+            if (track.trackTime === null){
+                trackTime.text = "00:00"
+            } else {
+                trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime.toInt())
+            }
 
             Glide.with(itemView.context)
                 .load(track.artworkUrl100)
@@ -35,6 +41,7 @@ class TrackAdapter(private val trackList: List<Track>) : RecyclerView.Adapter<Tr
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_view, parent, false)
         return TrackViewHolder(view)
     }
+
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(trackList[position])
