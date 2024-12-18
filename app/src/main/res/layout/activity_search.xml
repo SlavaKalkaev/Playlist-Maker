@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_search"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/settings_screen_background"
     android:orientation="vertical"
     android:paddingLeft="16dp"
     android:paddingTop="14dp"
     android:paddingRight="16dp"
-    android:id="@+id/main_search"
     android:paddingBottom="16dp">
 
 
@@ -30,8 +30,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="26dp"
-            android:layout_marginTop="14dp"
             android:layout_marginStart="26dp"
+            android:layout_marginTop="14dp"
             android:layout_marginBottom="24dp"
             android:fontFamily="@font/ys_display_medium"
             android:text="@string/search"
@@ -51,15 +51,15 @@
             android:background="@drawable/search"
             android:fontFamily="@font/ys_display_regular"
             android:hint="@string/search"
+            android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLines="1"
             android:paddingLeft="36dp"
+            android:singleLine="true"
             android:textColor="@color/search_view_text"
             android:textColorHint="@color/search_view_hint"
-            android:textSize="16sp"
             android:textCursorDrawable="@drawable/cursor"
-            android:imeOptions="actionDone"
-            android:singleLine="true"
+            android:textSize="16sp"
 
             />
 
@@ -78,19 +78,18 @@
             android:layout_height="12dp"
             android:layout_gravity="center_vertical|end"
             android:layout_marginEnd="14dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/clear"
-            android:visibility="gone"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            android:visibility="gone" />
 
     </FrameLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
-        android:layout_marginTop="24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/track_view"
-
-        />
+        android:layout_marginTop="24dp"
+        tools:listitem="@layout/track_view" />
 
     <LinearLayout
         android:id="@+id/layoutPlaceholder"
@@ -104,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="110dp"/>
+            android:layout_marginTop="110dp" />
 
         <TextView
             android:id="@+id/textPlaceholder"
@@ -112,10 +111,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:fontFamily="@font/ys_display_medium"
-            tools:text="@string/no_results"
             android:textAlignment="center"
             android:textColor="@color/view_text_placeholder"
-            android:textSize="19sp" />
+            android:textSize="19sp"
+            tools:text="@string/no_results" />
 
         <Button
             android:id="@+id/btnReload"
@@ -123,17 +122,62 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="24dp"
+            android:fontFamily="@font/ys_display_medium"
             android:text="@string/reload"
             android:textAllCaps="false"
             android:textColor="@color/button_text_placeholder"
             android:textSize="14sp"
-            android:fontFamily="@font/ys_display_medium"
+            android:visibility="gone"
             app:backgroundTint="@color/button_background_placeholder"
-            app:cornerRadius="54dp"
-            android:visibility="gone"/>
+            app:cornerRadius="54dp" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/linearLayoutHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="@font/ys_display_medium"
+            android:gravity="center"
+            android:text="@string/history_search"
+            android:textColor="@color/view_text_placeholder"
+            android:textSize="19sp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/historyTrackList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </ScrollView>
+
+        <Button
+            android:id="@+id/btnClearHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="24dp"
+            android:backgroundTint="@color/button_background_placeholder"
+            android:fontFamily="@font/ys_display_medium"
+            android:inputType="textCapSentences"
+            android:text="@string/clear_history"
+            android:textColor="@color/button_text_placeholder"
+            android:textSize="14sp"
+            app:cornerRadius="54dp"
+            tools:ignore="TextViewEdits" />
 
     </LinearLayout>
 
-
 </LinearLayout>
+
+

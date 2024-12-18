@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class SettingsActivity : AppCompatActivity() {
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,8 +17,7 @@ class SettingsActivity : AppCompatActivity() {
 
         val settingsBack = findViewById<ImageView>(R.id.settings_back)
         settingsBack.setOnClickListener {
-            val displayIntent = Intent(this, MainActivity::class.java)
-            startActivity(displayIntent)
+            finish()
         }
 
         val shareButton = findViewById<TextView>(R.id.share_pril)
@@ -37,7 +37,11 @@ class SettingsActivity : AppCompatActivity() {
             val subject = getString(R.string.support_subject)
             val body = getString(R.string.support_body)
 
-            val uri = Uri.parse("mailto:$recipientEmail?subject=${Uri.encode(subject)}&body=${Uri.encode(body)}")
+            val uri = Uri.parse(
+                "mailto:$recipientEmail?subject=${Uri.encode(subject)}&body=${
+                    Uri.encode(body)
+                }"
+            )
             val emailIntent = Intent(Intent.ACTION_SENDTO, uri)
             startActivity(Intent.createChooser(emailIntent, getString(R.string.support_title)))
         }
@@ -48,5 +52,21 @@ class SettingsActivity : AppCompatActivity() {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(browserIntent)
         }
+        val switchTheme = findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.switch_btn)
+        switchTheme.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+
+            val sharedPrefs = getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE)
+            sharedPrefs.edit()
+                .putBoolean(THEME_SWITCHER_KEY, checked)
+                .apply()
+        }
+    }
+
+    companion object {
+        private const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
+        private const val THEME_SWITCHER_KEY = "theme_switcher_key"
     }
 }
+
+

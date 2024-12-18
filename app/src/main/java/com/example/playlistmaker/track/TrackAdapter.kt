@@ -14,6 +14,8 @@ import java.util.Locale
 
 
 class TrackAdapter(private val trackList: List<Track>) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
+    var itemClickListener: ((Int, Track) -> Unit)? = null
+
 
     class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val trackName: TextView = itemView.findViewById(R.id.track_title)
@@ -45,6 +47,9 @@ class TrackAdapter(private val trackList: List<Track>) : RecyclerView.Adapter<Tr
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(trackList[position])
+        holder.itemView.setOnClickListener {
+            itemClickListener?.invoke(position, trackList[position])
+        }
     }
 
     override fun getItemCount(): Int = trackList.size
