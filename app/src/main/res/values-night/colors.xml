@@ -12,4 +12,13 @@
     <color name="button_text_placeholder">#1A1B22</color>
     <color name="button_background_placeholder">#FFFFFF</color>
     <color name="icon_placeholder">#FFFFFF</color>
+    <color name="player_background">#1A1B22</color>
+    <color name="player_label_text">#AEAFB4</color>
+    <color name="player_value_text">#FFFFFF</color>
+    <color name="player_add_button_background">#AEAFB4</color>
+    <color name="player_add_button">#FFFFFF</color>
+    <color name="player_play_button_background">#1A1B22</color>
+    <color name="player_play_button">#FFFFFF</color>
+    <color name="player_like_button_background">#AEAFB4</color>
+    <color name="player_like_button">#FFFFFF</color>
    </resources>
