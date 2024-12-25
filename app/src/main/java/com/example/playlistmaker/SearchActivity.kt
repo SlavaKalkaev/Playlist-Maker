@@ -26,6 +26,7 @@ import com.example.playlistmaker.track.HistoryAdapter
 import com.example.playlistmaker.track.Track
 import com.example.playlistmaker.track.TrackAdapter
 import com.example.playlistmaker.track.TrackResponse
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -107,10 +108,14 @@ class SearchActivity : AppCompatActivity() {
         trackAdapter.itemClickListener = { _, track ->
             searchHistory.add(track, tracksInHistory)
             searchHistoryAdapter.notifyDataSetChanged()
+            openPlayer(track)
 
             layoutHistory.visibility = if (tracksInHistory.isNotEmpty()) View.VISIBLE else View.GONE
             layoutPlaceholder.visibility = View.GONE
         }
+
+        searchHistoryAdapter.itemClickListener = {track ->
+            openPlayer(track)}
 
 
 
@@ -233,6 +238,11 @@ class SearchActivity : AppCompatActivity() {
                 }
             })
     }
+    private fun openPlayer(track: Track){
+        val playerIntent = Intent(this, PlayerActivity::class.java)
+        sharedPref.edit().putString(PLAYER_TRACK, Gson().toJson(track)).apply()
+        startActivity(playerIntent)
+    }
 
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -256,7 +266,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
+        const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
+        const val PLAYER_TRACK = "player_track"
     }
 
 }
