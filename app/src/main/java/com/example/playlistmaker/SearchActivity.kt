@@ -114,6 +114,9 @@ class SearchActivity : AppCompatActivity() {
             layoutPlaceholder.visibility = View.GONE
         }
 
+        searchHistoryAdapter.itemClickListener = {track ->
+            openPlayer(track)}
+
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_search)) { view, insets ->
